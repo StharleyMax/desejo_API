@@ -1,5 +1,6 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, JoinTable, ManyToMany,  PrimaryGeneratedColumn } from 'typeorm';
 import {Entity} from 'typeorm';
+import { StateEntity } from './state.entity';
 
 @Entity('tb_users')
 export class UsersEntity{
@@ -16,8 +17,9 @@ export class UsersEntity{
    @Column()
    city: string;
 
-   @Column('json',{nullable: true})
-   state: string[];
+   @JoinTable()
+   @ManyToMany(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity,{cascade: true})
+   states: StateEntity[];
 
    @Column()
    zipCode: string;

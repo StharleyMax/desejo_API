@@ -1,5 +1,6 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { StateEntity } from 'src/database/entities/state.entity';
 import { UsersEntity } from 'src/database/entities/users.entity';
 import { Repository,UpdateResult } from 'typeorm';
 import { CreateUsersDto, UpdateUsersDto } from './dto/users.dto';
@@ -8,31 +9,55 @@ import { CreateUsersDto, UpdateUsersDto } from './dto/users.dto';
 @Injectable()
 export class UsersService {
 
-
   constructor(
     @InjectRepository(UsersEntity)
-    private readonly users: Repository<UsersEntity>){}
+    private readonly users: Repository<UsersEntity>,
 
+    @InjectRepository(StateEntity)
+    private readonly state: Repository<StateEntity>
+
+    ){}
+
+   
+    //Mostrar todos os usuários
     usersAll(): Promise<UsersEntity[]> {
-    return this.users.find();
+    return this.users.find({
+      relations:['states']
+    });
     }
 
     //Buscar usuário por ID
     usersById(id: number): Promise<UsersEntity | undefined>{
-      return  this.users.findOne(id);
+      return  this.users.findOne(id,{
+        relations:['states']
+      });
      }
     
     //Criando usuário
-    createUsers(createUsersDto: CreateUsersDto){
-     const create = this.users.create(createUsersDto);
+   async createUsers(createUsersDto: CreateUsersDto){
+      const states = await Promise.all(
+        createUsersDto.states.map((name) => this.preLoadStatByName(name)),
+     );
+
+     const create = this.users.create({
+       ...createUsersDto,
+       states
+     });
      return this.users.save(create);
     }
 
     //Atualizando usuário
     async updateUsers(id: number, updateUsersDto: UpdateUsersDto){
+      const states = updateUsersDto.states &&
+           ( await Promise.all(
+          updateUsersDto.states.map((name) => this.preLoadStatByName(name)),
+      ));
+
+
       const updateUser = await this.users.preload({
-        id: +id,
+       id: + id,
        ...updateUsersDto,
+       states,
       });
       return this.users.save(updateUser);
     }
@@ -45,4 +70,14 @@ export class UsersService {
       }
       return this.users.remove(deleteUsers);
     }
+
+    private async preLoadStatByName(name: string): Promise<StateEntity>{
+      const states = await this.state.findOne({name});
+
+      if(states){
+        return states;
+      }
+      return this.state.create({name});
+    }
+
 }

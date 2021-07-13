@@ -5,7 +5,7 @@ export class CreateUsersDto{
    readonly name: string;
    readonly phone: string;
    readonly city: string;
-   readonly state: string[];
+   readonly states: string[];
    readonly zipCode: string;
    readonly user: string;
    readonly password: string;
@@ -15,9 +15,9 @@ export class CreateUsersDto{
 
 export class UpdateUsersDto{
 
-   name: string;
-   phone: string;
-   city: string;
-   state: string[];
-   zipCode: string;
+  readonly name: string;
+  readonly phone: string;
+  readonly city: string;
+  readonly states: string[];
+  readonly zipCode: string;
 }
