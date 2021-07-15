@@ -1,5 +1,6 @@
-import { Column, JoinTable, ManyToMany,  PrimaryGeneratedColumn } from 'typeorm';
+import { Column, JoinTable, ManyToMany,  ManyToOne,  OneToMany,  PrimaryGeneratedColumn } from 'typeorm';
 import {Entity} from 'typeorm';
+import { Desire } from './desire.entity';
 import { StateEntity } from './state.entity';
 
 @Entity('tb_users')
@@ -20,6 +21,10 @@ export class UsersEntity{
    @JoinTable()
    @ManyToMany(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity,{cascade: true})
    states: StateEntity[];
+
+   
+   @ManyToMany(()=> Desire, ( desire: Desire) => desire.users)
+   users: Desire[];
 
    @Column()
    zipCode: string;

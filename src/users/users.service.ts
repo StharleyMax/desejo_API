@@ -18,7 +18,6 @@ export class UsersService {
 
     ){}
 
-   
     //Mostrar todos os usuários
     usersAll(): Promise<UsersEntity[]> {
     return this.users.find({
@@ -38,7 +37,6 @@ export class UsersService {
       const states = await Promise.all(
         createUsersDto.states.map((name) => this.preLoadStatByName(name)),
      );
-
      const create = this.users.create({
        ...createUsersDto,
        states
@@ -52,7 +50,6 @@ export class UsersService {
            ( await Promise.all(
           updateUsersDto.states.map((name) => this.preLoadStatByName(name)),
       ));
-
 
       const updateUser = await this.users.preload({
        id: + id,
