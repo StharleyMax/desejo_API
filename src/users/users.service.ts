@@ -14,7 +14,7 @@ export class UsersService {
     private readonly users: Repository<UsersEntity>,
 
     @InjectRepository(StateEntity)
-    private readonly state: Repository<StateEntity>
+    private readonly statesUF: Repository<StateEntity>
 
     ){}
 
@@ -52,7 +52,7 @@ export class UsersService {
       ));
 
       const updateUser = await this.users.preload({
-       id: + id,
+       id: +id,
        ...updateUsersDto,
        states,
       });
@@ -69,12 +69,12 @@ export class UsersService {
     }
 
     private async preLoadStatByName(name: string): Promise<StateEntity>{
-      const states = await this.state.findOne({name});
+      const states = await this.statesUF.findOne({name});
 
       if(states){
         return states;
       }
-      return this.state.create({name});
+      return this.statesUF.create({name});
     }
 
 }

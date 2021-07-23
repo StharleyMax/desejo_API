@@ -1,4 +1,4 @@
-import { Column, JoinTable, ManyToMany,  ManyToOne,  OneToMany,  PrimaryGeneratedColumn } from 'typeorm';
+import { Column, JoinColumn, JoinTable, ManyToMany,   ManyToOne,   OneToMany,  PrimaryGeneratedColumn } from 'typeorm';
 import {Entity} from 'typeorm';
 import { Desire } from './desire.entity';
 import { StateEntity } from './state.entity';
@@ -18,12 +18,11 @@ export class UsersEntity{
    @Column()
    city: string;
 
-   @JoinTable()
-   @ManyToMany(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity,{cascade: true})
+   @JoinColumn()
+   @ManyToOne(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity,{cascade: true})
    states: StateEntity[];
-
    
-   @ManyToMany(()=> Desire, ( desire: Desire) => desire.users)
+   @OneToMany(()=> Desire, ( desire: Desire) => desire.users)
    users: Desire[];
 
    @Column()

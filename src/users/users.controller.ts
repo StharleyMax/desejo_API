@@ -11,13 +11,15 @@ export class UsersController {
 
     @Get()
     async usersAll(){
-    return this.usersService.usersAll();
+    const usersAll = this.usersService.usersAll();
+    return {usersAll};
     }
 
     //Buscar usuário por ID
     @Get(':id')
     usersById(@Param('id') id: number){
-        return this.usersService.usersById(id);
+      const getId = this.usersService.usersById(id);
+      return { getId}; 
     }
 
     //Criando usuário

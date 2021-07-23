@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UsersEntity } from "./users.entity";
 
 
@@ -14,7 +14,7 @@ export class StateEntity {
     @Column()
     name: string;
 
-    @ManyToMany(()=>UsersEntity, (usersEntity: UsersEntity) => usersEntity.states)
+    @OneToMany(()=>UsersEntity, (usersEntity: UsersEntity) => usersEntity.states)
     stateEntity: UsersEntity[];
 
 }

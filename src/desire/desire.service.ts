@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Desire } from '../database/entities/desire.entity';
+import { UsersEntity } from '../database/entities/users.entity';
 import { AddDesireDto } from './dto/desire.dto';
 
 
@@ -11,7 +12,12 @@ export class DesireService{
     constructor(
 
         @InjectRepository(Desire)
-        private readonly desire: Repository<Desire>
+        private readonly desire: Repository<Desire>,
+
+        @InjectRepository(UsersEntity)
+        private readonly users: Repository<UsersEntity>
+
+
     ){}
 
         //Mostrar todos os desejos cradastrados

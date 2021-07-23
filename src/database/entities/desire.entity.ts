@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UsersEntity } from "./users.entity";
 
 
@@ -15,10 +15,9 @@ export class Desire{
     @Column()
     description: string;
 
-    //colocar chave estrangeira.
-    
-    @JoinTable()
-    @ManyToMany(()=> UsersEntity, (usersEntity: UsersEntity) => usersEntity.id,{cascade: true} )
-    users: UsersEntity[];
+    //colocar chave estrangeira.  
+    @JoinColumn()
+    @ManyToOne(()=> UsersEntity, (usersEntity: UsersEntity) => usersEntity.id,{cascade: true} )
+    users: UsersEntity;
     
 }
