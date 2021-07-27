@@ -2,10 +2,10 @@
 export class CreateUsersDto{
     
    readonly id: number;
-   readonly name: string;
+   readonly fullName: string;
    readonly phone: string;
    readonly city: string;
-   readonly states: string[];
+   readonly states: any;
    readonly zipCode: string;
    readonly user: string;
    readonly password: string;
@@ -15,9 +15,13 @@ export class CreateUsersDto{
 
 export class UpdateUsersDto{
 
-  readonly name: string;
+  readonly fullName: string;
   readonly phone: string;
   readonly city: string;
-  readonly states: string[];
+  readonly states: string;
   readonly zipCode: string;
+}
+
+export class GetAllUsersDto{
+  users: CreateUsersDto[];
 }

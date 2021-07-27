@@ -15,6 +15,6 @@ export class StateEntity {
     name: string;
 
     @OneToMany(()=>UsersEntity, (usersEntity: UsersEntity) => usersEntity.states)
-    stateEntity: UsersEntity[];
+    stateEntity: UsersEntity;
 
 }

@@ -14,14 +14,17 @@ export class UsersService {
     private readonly users: Repository<UsersEntity>,
 
     @InjectRepository(StateEntity)
-    private readonly statesUF: Repository<StateEntity>
+    private readonly states: Repository<StateEntity>
 
     ){}
 
     //Mostrar todos os usuários
-    usersAll(): Promise<UsersEntity[]> {
+    usersAll(eventPlace: string, ): Promise<UsersEntity[]> {
     return this.users.find({
-      relations:['states']
+      where:{
+        fullName: eventPlace
+      },
+      relations:["states"]
     });
     }
 
@@ -31,33 +34,36 @@ export class UsersService {
         relations:['states']
       });
      }
+
+     //Buscar usuário por Nome
+     usersByName(byName: string): Promise<UsersEntity| undefined>{
+      const usersName = this.users.findOne(byName, {
+        where: { name: 'MarcioCarolino'}
+      
+      });
+      return usersName;
+     }
+
     
     //Criando usuário
-   async createUsers(createUsersDto: CreateUsersDto){
-      const states = await Promise.all(
-        createUsersDto.states.map((name) => this.preLoadStatByName(name)),
-     );
-     const create = this.users.create({
-       ...createUsersDto,
-       states
-     });
-     return this.users.save(create);
+   async createUsers(createUsersDto: CreateUsersDto): Promise<UsersEntity | undefined>{
+
+      const create = this.users.create({
+        fullName:  createUsersDto.fullName,
+        phone: createUsersDto.phone,
+        city: createUsersDto.city,
+        states: createUsersDto.states,
+        zipCode: createUsersDto.zipCode,
+        user: createUsersDto.user,
+        password: createUsersDto.password,
+        createdAt: new Date(),
+        active : true,
+      });
+      return this.users.save(create);
     }
 
     //Atualizando usuário
-    async updateUsers(id: number, updateUsersDto: UpdateUsersDto){
-      const states = updateUsersDto.states &&
-           ( await Promise.all(
-          updateUsersDto.states.map((name) => this.preLoadStatByName(name)),
-      ));
-
-      const updateUser = await this.users.preload({
-       id: +id,
-       ...updateUsersDto,
-       states,
-      });
-      return this.users.save(updateUser);
-    }
+    async updateUsers(id: number, updateUsersDto: UpdateUsersDto){}
 
     //Deletando usuário
    async  deleteUsersById(id: number){
@@ -68,13 +74,13 @@ export class UsersService {
       return this.users.remove(deleteUsers);
     }
 
+
     private async preLoadStatByName(name: string): Promise<StateEntity>{
-      const states = await this.statesUF.findOne({name});
+      const states = await this.states.findOne({name});
 
       if(states){
         return states;
       }
-      return this.statesUF.create({name});
+      return this.states.create({name});
     }
-
 }

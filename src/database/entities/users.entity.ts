@@ -10,7 +10,7 @@ export class UsersEntity{
    id: number;
 
    @Column()
-   name: string;
+   fullName: string;
 
    @Column()
    phone: string;
@@ -19,9 +19,9 @@ export class UsersEntity{
    city: string;
 
    @JoinColumn()
-   @ManyToOne(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity,{cascade: true})
+   @ManyToOne(() => StateEntity, (stateEntity:StateEntity) => stateEntity.stateEntity)
    states: StateEntity[];
-   
+      
    @OneToMany(()=> Desire, ( desire: Desire) => desire.users)
    users: Desire[];
 

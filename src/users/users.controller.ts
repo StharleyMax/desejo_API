@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Delete, Query } from '@nestjs/common';
 import { UsersEntity } from 'src/database/entities/users.entity';
 import { Users } from 'src/database/repository/users.repository';
 import { CreateUsersDto, UpdateUsersDto } from './dto/users.dto';
@@ -10,18 +10,22 @@ export class UsersController {
     constructor(private readonly usersService: UsersService){}
 
     @Get()
-    async usersAll(){
-    const usersAll = this.usersService.usersAll();
-    return {usersAll};
+    async getAll(@Query('fullName') full: string, cidade: string){
+        return this.usersService.usersAll(full);
     }
+    /*
+    async usersAll(){
+    return this.usersService.usersAll();
+    }
+    */
 
     //Buscar usuário por ID
     @Get(':id')
     usersById(@Param('id') id: number){
-      const getId = this.usersService.usersById(id);
-      return { getId}; 
+      return this.usersService.usersById(id); 
     }
 
+   
     //Criando usuário
     @Post()
     createUsers(@Body() createUsersDto:CreateUsersDto){
