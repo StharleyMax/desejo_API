@@ -4,19 +4,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DesireModule } from './desire/desire.module';
 import { UsersModule } from './users/users.module';
+import { StateModule } from './state/state.module';
 
 @Module({
-  imports: [UsersModule,DesireModule, 
+  imports: [
+    UsersModule,
+    DesireModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      port:3306,
-      host:'localhost',
+      port: 3306,
+      host: 'localhost',
       username: 'root',
-      password:'123456',
+      password: '',
       database: 'desejo',
       autoLoadEntities: true,
-      synchronize: true
-  })],
+      synchronize: true,
+    }),
+    StateModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
