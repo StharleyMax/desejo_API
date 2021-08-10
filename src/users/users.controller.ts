@@ -24,6 +24,14 @@ export class UsersController {
     return this.usersService.usersAll();
   }
 
+  @Get('search-encode')
+   searchEncode(
+     @Query('type') type: string,
+     @Query('data') data: string,
+     @Query('order') order?: string){
+    return this.usersService.searchEncode({type, data, order});
+  }
+
   @Get('search')
   async search(@Query('type') type: string, @Query('data') data: string) {
     return this.usersService.search(type, data);

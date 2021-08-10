@@ -1,3 +1,4 @@
+import { Query } from '@nestjs-query/core';
 import {
   HttpException,
   Injectable,
@@ -7,8 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { StateEntity } from 'src/database/entities/state.entity';
 import { UsersEntity } from 'src/database/entities/users.entity';
+import { Users } from 'src/database/repository/users.repository';
 import { Repository, UpdateResult, Like } from 'typeorm';
 import { CreateUsersDto, UpdateUsersDto } from './dto/users.dto';
+
+interface ISearch{
+  type: string;
+  data: string;
+  order?: string;
+  limit?: number;
+}
 
 @Injectable()
 export class UsersService {
@@ -52,13 +61,49 @@ export class UsersService {
   }
 
   //Buscar usuário por Nome
-  usersByName(byName: string): Promise<UsersEntity | undefined> {
-    const usersName = this.users.findOne(byName, {
-      where: { name: 'MarcioCarolino' },
-    });
-    return usersName;
-  }
+  /*searchEncode({type, data}: ISearch){
 
+    /*const q: Query<query> = {
+      filter: {
+        where: {
+          fullName: {like: `%${name}%`},
+        }
+     },
+    };*
+      const query = {
+        "url": `{"where": {"${type}": {"like": "%${data}%"}}}`
+      }
+      const uri = encodeURI(query.url);
+
+      return {"url": `localhost:3000/user/${uri}`}
+  }
+*/
+  searchEncode({type, data, order}: ISearch){
+
+    if(order){
+      const query = {
+        "url": `{"where": {"${type}": {"like": "%${data}%"}}, "order": ["${order}"]}`
+      }
+
+      console.log(query.url)
+      const uri = encodeURI(query.url);
+      return {"url": `localhost:3000/user/${uri}`}
+    }
+
+    const query = {
+      "url": `{"where": {"${type}": {"like": "%${data}%"}}}`
+    }
+
+    console.log(query.url)
+    const uri = encodeURI(query.url);
+    return {"url": `localhost:3000/user/${uri}`}
+
+  }
+/*
+  searchEncode({type, data, order, limit}: ISearch){
+
+  }
+*/
   //Criando usuário
   async createUsers(
     createUsersDto: CreateUsersDto,
@@ -75,13 +120,14 @@ export class UsersService {
       active: true,
     });
     return this.users.save(create);
-  }
+  };
 
   //Atualizando usuário
   //async updateUsers(id: number, updateUsersDto: UpdateUsersDto) {}
 
   //Deletando usuário
   async deleteUsersById(id: number) {
+
     const deleteUsers = await this.users.findOne(id);
     if (!deleteUsers) {
       throw new NotFoundException('Não foi possível deleter usuário');
